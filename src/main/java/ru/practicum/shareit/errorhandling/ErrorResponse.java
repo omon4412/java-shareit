@@ -1,4 +1,4 @@
-package ru.practicum.shareit.util;
+package ru.practicum.shareit.errorhandling;
 
 /**
  * Модель объекта ошибки для возврата клиенту.

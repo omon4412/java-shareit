@@ -1,12 +1,15 @@
-package ru.practicum.shareit.util;
+package ru.practicum.shareit.errorhandling;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.item.exception.ItemNotFoundException;
+import ru.practicum.shareit.item.exception.WrongOwnerException;
 import ru.practicum.shareit.user.exception.UserAlreadyExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 
@@ -43,6 +46,32 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleUserAlreadyExistException(final UserAlreadyExistsException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    /**
+     * Обработчик исключения {@link WrongOwnerException}.
+     * Возникает когда пользователь обращается не к своей вещи
+     *
+     * @param e Исключение {@link WrongOwnerException}
+     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleWrongOwnerException(final WrongOwnerException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    /**
+     * Обработчик исключения {@link ItemNotFoundException}.
+     * Возникает когда искомая вещь не найден
+     *
+     * @param e Исключение {@link ItemNotFoundException}
+     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleItemNotFoundException(final ItemNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
@@ -86,6 +115,12 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
     public ErrorResponse handleHttpRequestMethodNotSupportedException(final HttpRequestMethodNotSupportedException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleMissingRequestHeaderException(final MissingRequestHeaderException e) {
         return new ErrorResponse(e.getMessage());
     }
 
