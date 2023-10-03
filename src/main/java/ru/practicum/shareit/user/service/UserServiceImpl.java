@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.exception.UserAlreadyExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.repository.UserDao;
+import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
 
@@ -15,11 +15,11 @@ import java.util.Collection;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    private final UserDao userStorage;
+    private final UserRepository userStorage;
 
     @Override
     public User addUser(User user) {
-        if (userStorage.existsByEmail(user)) {
+        if (userStorage.findByEmail(user.getEmail()) != null) {
             log.error("Пользователь с почтой=" + user.getEmail() + " уже существует");
             throw new UserAlreadyExistsException("Пользователь с почтой=" + user.getEmail() + " уже существует");
         }
@@ -28,48 +28,48 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(int userId) {
-        User user = userStorage.get(userId);
-        if (user == null) {
-            log.error("Пользователь с id=" + userId + " не найден");
-            throw new UserNotFoundException("Пользователь с id=" + userId + " не найден");
-        }
-        return user;
+        return userStorage.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("Пользователь с id=" + userId + " не найден");
+                    return new UserNotFoundException("Пользователь с id=" + userId + " не найден");
+                });
     }
 
     @Override
     public User updateUser(User user) {
         int userId = user.getId();
-        User checkUser = userStorage.get(userId);
-        if (checkUser == null) {
-            log.error("Пользователь с id=" + userId + " не найден");
-            throw new UserNotFoundException("Пользователь с id=" + userId + " не найден");
-        }
+        User checkUser = userStorage.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("Пользователь с id=" + userId + " не найден");
+                    return new UserNotFoundException("Пользователь с id=" + userId + " не найден");
+                });
 
         if (user.getEmail() != null && !user.getEmail().equals(checkUser.getEmail())) {
-            if (userStorage.existsByEmail(user)) {
+            if (userStorage.findByEmail(user.getEmail()) != null) {
                 log.error("Пользователь с почтой=" + user.getEmail() + " уже существует");
                 throw new UserAlreadyExistsException("Пользователь с почтой=" + user.getEmail() + " уже существует");
             }
             checkUser.setEmail(user.getEmail());
         }
-        if (user.getName() != null) {
+        if (user.getName() != null && !user.getName().isBlank()) {
             checkUser.setName(user.getName());
         }
-        return userStorage.update(checkUser);
+        return userStorage.save(checkUser);
     }
 
     @Override
     public User deleteUser(int userId) {
-        User user = userStorage.delete(userId);
-        if (user == null) {
-            log.error("Пользователь с id=" + userId + " не найден");
-            throw new UserNotFoundException("Пользователь с id=" + userId + " не найден");
-        }
-        return user;
+        User checkUser = userStorage.findById(userId)
+                .orElseThrow(() -> {
+                    log.error("Пользователь с id=" + userId + " не найден");
+                    return new UserNotFoundException("Пользователь с id=" + userId + " не найден");
+                });
+        userStorage.delete(checkUser);
+        return checkUser;
     }
 
     @Override
     public Collection<User> getAll() {
-        return userStorage.getAll();
+        return userStorage.findAll();
     }
 }

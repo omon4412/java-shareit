@@ -2,37 +2,38 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import ru.practicum.shareit.validation.Create;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
- * DTO для представления данных о вещи.
+ * DTO для представления данных о предмете.
  */
 @Data
 @Builder
 public class ItemDto {
 
     /**
-     * Идентификатор вещи.
+     * Идентификатор предмета.
      */
     protected int id;
 
     /**
-     * Название вещи.
+     * Название предмета.
      */
-    @NotBlank
+    @NotBlank(groups = {Create.class})
     protected String name;
 
     /**
-     * Описание вещи.
+     * Описание предмета.
      */
-    @NotBlank
+    @NotBlank(groups = {Create.class})
     protected String description;
 
     /**
-     * Признак доступности вещи.
+     * Признак доступности предмета.
      */
-    @NotNull
+    @NotNull(groups = {Create.class})
     protected Boolean available;
 }
