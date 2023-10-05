@@ -36,11 +36,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item getItem(int itemId) {
-        return itemStorage.findById(itemId)
+        Item item = itemStorage.findById(itemId)
                 .orElseThrow(() -> {
                     log.error("Предмет с id=" + itemId + " не найден");
                     return new ItemNotFoundException("Предмет с id=" + itemId + " не найден");
                 });
+        return item;
     }
 
     @Override
