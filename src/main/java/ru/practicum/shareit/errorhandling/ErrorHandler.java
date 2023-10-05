@@ -8,6 +8,9 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.booking.BookingBadRequestException;
+import ru.practicum.shareit.booking.BookingNotFoundException;
+import ru.practicum.shareit.item.exception.ItemNotAvailableException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.exception.WrongOwnerException;
 import ru.practicum.shareit.user.exception.UserAlreadyExistsException;
@@ -51,7 +54,7 @@ public class ErrorHandler {
 
     /**
      * Обработчик исключения {@link WrongOwnerException}.
-     * Возникает когда пользователь обращается не к своей вещи
+     * Возникает когда пользователь обращается не к своему предмету
      *
      * @param e Исключение {@link WrongOwnerException}
      * @return Объект {@link ErrorResponse} c информацией об ошибке
@@ -64,7 +67,7 @@ public class ErrorHandler {
 
     /**
      * Обработчик исключения {@link ItemNotFoundException}.
-     * Возникает когда искомая вещь не найден
+     * Возникает когда искомый предмет не найден
      *
      * @param e Исключение {@link ItemNotFoundException}
      * @return Объект {@link ErrorResponse} c информацией об ошибке
@@ -72,6 +75,46 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleItemNotFoundException(final ItemNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+
+    /**
+     * Обработчик исключения {@link ItemNotAvailableException}.
+     * Возникает когда искомый предмет не доступен
+     *
+     * @param e Исключение {@link ItemNotAvailableException}
+     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleItemNotAvailableException(final ItemNotAvailableException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    /**
+     * Обработчик исключения {@link BookingNotFoundException}.
+     * Возникает когда искомая бронь не найдена
+     *
+     * @param e Исключение {@link BookingNotFoundException}
+     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleBookingNotFoundException(final BookingNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    /**
+     * Обработчик исключения {@link BookingBadRequestException}.
+     * Возникает когда искомая бронь неверна
+     *
+     * @param e Исключение {@link BookingBadRequestException}
+     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBookingBadRequestException(final BookingBadRequestException e) {
         return new ErrorResponse(e.getMessage());
     }
 

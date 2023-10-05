@@ -3,6 +3,7 @@ package ru.practicum.shareit.user.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.user.exception.UserAlreadyExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
@@ -17,11 +18,16 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userStorage;
 
+    @Transactional
     @Override
     public User addUser(User user) {
         if (userStorage.findByEmail(user.getEmail()) != null) {
             log.error("Пользователь с почтой=" + user.getEmail() + " уже существует");
-            throw new UserAlreadyExistsException("Пользователь с почтой=" + user.getEmail() + " уже существует");
+            try {
+                userStorage.save(user);
+            } catch (RuntimeException ex) {
+                throw new UserAlreadyExistsException("Пользователь с почтой=" + user.getEmail() + " уже существует");
+            }
         }
         return userStorage.save(user);
     }
