@@ -8,8 +8,8 @@ import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.booking.BookingBadRequestException;
-import ru.practicum.shareit.booking.BookingNotFoundException;
+import ru.practicum.shareit.booking.exception.BookingBadRequestException;
+import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.item.exception.ItemNotAvailableException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.exception.WrongOwnerException;
@@ -31,7 +31,7 @@ public class ErrorHandler {
      * Возникает когда искомый пользователь не найден
      *
      * @param e Исключение {@link UserNotFoundException}
-     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     * @return Объект {@link ErrorResponse} с информацией об ошибке
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -44,7 +44,7 @@ public class ErrorHandler {
      * Возникает когда пользователь уже существует
      *
      * @param e Исключение {@link UserAlreadyExistsException}
-     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     * @return Объект {@link ErrorResponse} с информацией об ошибке
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -54,10 +54,10 @@ public class ErrorHandler {
 
     /**
      * Обработчик исключения {@link WrongOwnerException}.
-     * Возникает когда пользователь обращается не к своему предмету
+     * Возникает, когда пользователь обращается не к своему предмету
      *
      * @param e Исключение {@link WrongOwnerException}
-     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     * @return Объект {@link ErrorResponse} с информацией об ошибке
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
@@ -70,7 +70,7 @@ public class ErrorHandler {
      * Возникает когда искомый предмет не найден
      *
      * @param e Исключение {@link ItemNotFoundException}
-     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     * @return Объект {@link ErrorResponse} с информацией об ошибке
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -84,7 +84,7 @@ public class ErrorHandler {
      * Возникает когда искомый предмет не доступен
      *
      * @param e Исключение {@link ItemNotAvailableException}
-     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     * @return Объект {@link ErrorResponse} с информацией об ошибке
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -97,7 +97,7 @@ public class ErrorHandler {
      * Возникает когда искомая бронь не найдена
      *
      * @param e Исключение {@link BookingNotFoundException}
-     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     * @return Объект {@link ErrorResponse} с информацией об ошибке
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -110,7 +110,7 @@ public class ErrorHandler {
      * Возникает когда искомая бронь неверна
      *
      * @param e Исключение {@link BookingBadRequestException}
-     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     * @return Объект {@link ErrorResponse} с информацией об ошибке
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -120,10 +120,10 @@ public class ErrorHandler {
 
     /**
      * Обработчик исключения {@link ConstraintViolationException}.
-     * Возникает когда действие нарушает ограничение на структуру модели
+     * Возникает, когда действие нарушает ограничение на структуру модели
      *
      * @param e Исключение {@link ConstraintViolationException}
-     * @return Спискок всех нарушений {@link Violation}
+     * @return Список всех нарушений {@link Violation}
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -138,7 +138,7 @@ public class ErrorHandler {
      * Возникает когда проверка аргумента с аннотацией @Valid не удалась
      *
      * @param e Исключение {@link MethodArgumentNotValidException}
-     * @return Спискок всех нарушений {@link Violation}
+     * @return Список всех нарушений {@link Violation}
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -153,7 +153,7 @@ public class ErrorHandler {
      * Возникает когда обработчик запросов не поддерживает определенный метод запроса
      *
      * @param e Исключение {@link HttpRequestMethodNotSupportedException}
-     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     * @return Объект {@link ErrorResponse} с информацией об ошибке
      */
     @ExceptionHandler
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
@@ -171,7 +171,7 @@ public class ErrorHandler {
      * Обработчик всевозможных исключений во время работы программы.
      *
      * @param e Исключение {@link Throwable}
-     * @return Объект {@link ErrorResponse} c информацией об ошибке
+     * @return Объект {@link ErrorResponse} с информацией об ошибке
      */
     @ExceptionHandler(Throwable.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

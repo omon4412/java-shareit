@@ -20,7 +20,7 @@ import javax.persistence.*;
 public class Item {
 
     /**
-     * Идентификатор вещи.
+     * Идентификатор предмета.
      */
     @Id
     @Column(name = "item_id")
@@ -28,25 +28,25 @@ public class Item {
     protected int id;
 
     /**
-     * Название вещи.
+     * Название предмета.
      */
     @Column(name = "name")
     protected String name;
 
     /**
-     * Описание вещи.
+     * Описание предмета.
      */
     @Column(name = "description")
     protected String description;
 
     /**
-     * Признак доступности вещи.
+     * Признак доступности предмета.
      */
     @Column(name = "available")
     protected Boolean available;
 
     /**
-     * Владелец вещи.
+     * Владелец предмета.
      */
     @ManyToOne
     @JoinColumn(name = "owner_id")

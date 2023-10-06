@@ -12,7 +12,7 @@ public class UserMapper {
     /**
      * Преобразует объект типа UserDto в объект типа User.
      *
-     * @param userDto Объект типа UserGetDto для преобразования
+     * @param userDto Объект типа UserDto для преобразования
      * @return Объект типа User
      */
     public static User toUser(UserDto userDto) {

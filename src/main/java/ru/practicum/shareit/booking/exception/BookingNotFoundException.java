@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking;
+package ru.practicum.shareit.booking.exception;
 
 /**
  * Исключение, выбрасываемое, когда бронь не существует.

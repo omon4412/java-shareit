@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.validation.Create;
@@ -47,9 +50,10 @@ public class ItemController {
      * @return Данные предмета
      */
     @GetMapping("/{itemId}")
-    public ItemDto getItem(@PathVariable @PositiveOrZero int itemId) {
+    public ItemDto getItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
+                           @PathVariable @PositiveOrZero int itemId) {
         log.debug("Начат поиск предмета - " + itemId);
-        return ItemMapper.toItemDto(itemService.getItem(itemId));
+        return itemService.getItemById(itemId, userId);
     }
 
     /**
@@ -88,17 +92,38 @@ public class ItemController {
      */
     @GetMapping
     public Collection<ItemDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") Integer userId) {
-        Collection<ItemDto> items = itemService.getAll(userId).stream()
-                .map(ItemMapper::toItemDto)
-                .collect(Collectors.toList());
+        Collection<ItemDto> items = itemService.getAll(userId);
         log.debug("Количество предметов пользователя - " + userId + " - " + items.size());
         return items;
     }
 
+    /**
+     * Поиск предмета по названию или описанию.
+     *
+     * @param text Текст поиска
+     * @return список предметов
+     */
     @GetMapping("/search")
     public Collection<ItemDto> searchItems(@RequestParam @NotNull String text) {
         return itemService.searchItems(text.toLowerCase()).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Добавить комментарий к предмету.
+     *
+     * @param userId     Пользователь, который оставляет комментарий
+     * @param itemId     Предмет, к которому пользователь оставляет комментарий
+     * @param commentDto Комментарий
+     * @return Добавленный комментарий
+     */
+    @PostMapping("/{itemId}/comment")
+    public CommentDto addComment(
+            @RequestHeader(value = "X-Sharer-User-Id") Integer userId,
+            @PathVariable int itemId,
+            @Validated(Create.class) @RequestBody CommentDto commentDto) {
+        Comment comment = CommentMapper.toComment(commentDto);
+        return CommentMapper.toCommentDto(itemService.addComment(userId, itemId, comment));
     }
 }

@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
         return userStorage.save(user);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public User getUser(int userId) {
         return userStorage.findById(userId)
@@ -41,6 +42,7 @@ public class UserServiceImpl implements UserService {
                 });
     }
 
+    @Transactional
     @Override
     public User updateUser(User user) {
         int userId = user.getId();
@@ -63,6 +65,7 @@ public class UserServiceImpl implements UserService {
         return userStorage.save(checkUser);
     }
 
+    @Transactional
     @Override
     public User deleteUser(int userId) {
         User checkUser = userStorage.findById(userId)
@@ -74,6 +77,7 @@ public class UserServiceImpl implements UserService {
         return checkUser;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Collection<User> getAll() {
         return userStorage.findAll();
