@@ -1,5 +1,7 @@
 package ru.practicum.shareit.item.service;
 
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.Collection;
@@ -20,9 +22,10 @@ public interface ItemService {
      * Получает предмет по его идентификатору.
      *
      * @param itemId Идентификатор предмета
+     * @param userId
      * @return Объект предмет
      */
-    Item getItem(int itemId);
+    ItemDto getItemById(int itemId, Integer userId);
 
     /**
      * Обновляет данные предмета.
@@ -46,7 +49,23 @@ public interface ItemService {
      * @param userId Идентификатор пользователя
      * @return Список предметов
      */
-    Collection<Item> getAll(int userId);
+    Collection<ItemDto> getAll(int userId);
 
+    /**
+     * Поиск предмета по названию или описанию.
+     *
+     * @param text текст поиска
+     * @return список предметов
+     */
     Collection<Item> searchItems(String text);
+
+    /**
+     * Добавить комментарий к предмету.
+     *
+     * @param userId  Пользователь, который оставляет комментарий
+     * @param itemId  Предмет, к которому пользователь оставляет комментарий
+     * @param comment Комментарий
+     * @return Добавленный комментарий
+     */
+    Comment addComment(Integer userId, int itemId, Comment comment);
 }

@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.BookingBadRequestException;
-import ru.practicum.shareit.booking.BookingNotFoundException;
+import ru.practicum.shareit.booking.exception.BookingBadRequestException;
+import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -63,6 +63,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.save(booking);
     }
 
+    @Transactional
     @Override
     public Booking changeStatus(int userId, int bookingId, boolean approved) {
         userRepository.findById(userId)
@@ -93,6 +94,7 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.save(booking);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Booking getById(Integer userId, int bookingId) {
         userRepository.findById(userId)
@@ -115,6 +117,7 @@ public class BookingServiceImpl implements BookingService {
         return booking;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Collection<Booking> getAll(Integer userId, BookingStatus state) {
         userRepository.findById(userId)
@@ -142,6 +145,7 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Collection<Booking> getAllByOwner(Integer ownerId, BookingStatus bookingStatus) {
         userRepository.findById(ownerId)

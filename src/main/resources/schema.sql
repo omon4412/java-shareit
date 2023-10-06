@@ -1,6 +1,7 @@
 drop table public.users CASCADE;
 drop table public.items CASCADE;
 drop table public.bookings CASCADE;
+drop table public.comments CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.users
 (
@@ -34,4 +35,18 @@ CREATE TABLE IF NOT EXISTS public.bookings
         constraint bookings_users_user_id_fk
             references public.users,
     status     varchar   not null
+);
+
+CREATE TABLE IF NOT EXISTS public.comments
+(
+    comment_id serial
+        primary key,
+    text       varchar(1000) not null,
+    item_id    integer       not null
+        constraint comments_items_item_id_fk
+            references public.items,
+    user_id    integer       not null
+        constraint comments_users_user_id_fk
+            references public.users,
+    created    timestamp     not null
 );
