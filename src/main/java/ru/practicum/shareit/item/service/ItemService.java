@@ -1,52 +1,71 @@
 package ru.practicum.shareit.item.service;
 
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.Collection;
 
 /**
- * Интерфейс для управления вещами.
+ * Интерфейс для управления предметами.
  */
 public interface ItemService {
     /**
-     * Добавляет новую вещь.
+     * Добавляет новый предмет.
      *
-     * @param item Объект вещи для добавления
-     * @return Добавленный объект вещи
+     * @param item Объект предмета для добавления
+     * @return Добавленный объект предмета
      */
     Item addItem(Item item, int ownerId);
 
     /**
-     * Получает вещь по её идентификатору.
+     * Получает предмет по его идентификатору.
      *
-     * @param itemId Идентификатор вещи
-     * @return Объект вещь
+     * @param itemId Идентификатор предмета
+     * @param userId
+     * @return Объект предмет
      */
-    Item getItem(int itemId);
+    ItemDto getItemById(int itemId, Integer userId);
 
     /**
-     * Обновляет данные вещи.
+     * Обновляет данные предмета.
      *
-     * @param item Объект вещи для обновления
-     * @return Обновленный объект вещи
+     * @param item Объект предмета для обновления
+     * @return Обновленный объект предмета
      */
     Item updateItem(Item item, int userId);
 
     /**
-     * Удаляет вещь по его идентификатору.
+     * Удаляет предмет по его идентификатору.
      *
-     * @param itemId Идентификатор вещи для удаления
-     * @return Удаленный объект вещи
+     * @param itemId Идентификатор предмета для удаления
+     * @return Удаленный объект предмета
      */
     Item deleteItem(int itemId);
 
     /**
-     * Получает список всех вещей.
+     * Получает список всех предметов.
      *
      * @param userId Идентификатор пользователя
-     * @return Список вещей
+     * @return Список предметов
      */
-    Collection<Item> getAll(int userId);
+    Collection<ItemDto> getAll(int userId);
 
+    /**
+     * Поиск предмета по названию или описанию.
+     *
+     * @param text текст поиска
+     * @return список предметов
+     */
     Collection<Item> searchItems(String text);
+
+    /**
+     * Добавить комментарий к предмету.
+     *
+     * @param userId  Пользователь, который оставляет комментарий
+     * @param itemId  Предмет, к которому пользователь оставляет комментарий
+     * @param comment Комментарий
+     * @return Добавленный комментарий
+     */
+    Comment addComment(Integer userId, int itemId, Comment comment);
 }

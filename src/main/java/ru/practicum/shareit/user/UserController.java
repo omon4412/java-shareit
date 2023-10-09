@@ -2,14 +2,15 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.user.dto.UserAddUpdateDto;
-import ru.practicum.shareit.user.dto.UserGetDto;
+import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.validation.Create;
+import ru.practicum.shareit.validation.Update;
 
-import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -35,10 +36,10 @@ public class UserController {
      * @return Данные добавленного пользователя
      */
     @PostMapping
-    public UserGetDto addUser(@Valid @RequestBody UserAddUpdateDto userDto) {
+    public UserDto addUser(@Validated(Create.class) @RequestBody UserDto userDto) {
         log.debug("Начато добавление пользователя - " + userDto);
         User user = UserMapper.toUser(userDto);
-        return UserMapper.toGetUserDto(userService.addUser(user));
+        return UserMapper.toUserDto(userService.addUser(user));
     }
 
     /**
@@ -48,9 +49,9 @@ public class UserController {
      * @return Данные пользователя
      */
     @GetMapping("/{userId}")
-    public UserGetDto getUser(@PathVariable @PositiveOrZero int userId) {
+    public UserDto getUser(@PathVariable @PositiveOrZero int userId) {
         log.debug("Начат поиск пользователя - " + userId);
-        return UserMapper.toGetUserDto(userService.getUser(userId));
+        return UserMapper.toUserDto(userService.getUser(userId));
     }
 
     /**
@@ -61,12 +62,12 @@ public class UserController {
      * @return Обновленные данные пользователя
      */
     @PatchMapping("/{userId}")
-    public UserGetDto updateUser(@PathVariable @PositiveOrZero int userId,
-                                 @RequestBody UserAddUpdateDto userDto) {
+    public UserDto updateUser(@PathVariable @PositiveOrZero int userId,
+                              @Validated(Update.class) @RequestBody UserDto userDto) {
         log.debug("Начато обновление пользователя - " + userDto);
         User user = UserMapper.toUser(userDto);
         user.setId(userId);
-        return UserMapper.toGetUserDto(userService.updateUser(user));
+        return UserMapper.toUserDto(userService.updateUser(user));
     }
 
     /**
@@ -76,9 +77,9 @@ public class UserController {
      * @return Данные удаленного пользователя
      */
     @DeleteMapping("/{userId}")
-    public UserGetDto deleteUser(@PathVariable @PositiveOrZero int userId) {
+    public UserDto deleteUser(@PathVariable @PositiveOrZero int userId) {
         log.debug("Начато удаление пользователя - " + userId);
-        return UserMapper.toGetUserDto(userService.deleteUser(userId));
+        return UserMapper.toUserDto(userService.deleteUser(userId));
     }
 
     /**
@@ -87,9 +88,9 @@ public class UserController {
      * @return Список пользователей
      */
     @GetMapping
-    public Collection<UserGetDto> getAll() {
-        Collection<UserGetDto> users = userService.getAll().stream()
-                .map(UserMapper::toGetUserDto)
+    public Collection<UserDto> getAll() {
+        Collection<UserDto> users = userService.getAll().stream()
+                .map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
         log.debug("Количество пользователей - " + users.size());
         return users;

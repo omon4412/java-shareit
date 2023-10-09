@@ -15,6 +15,7 @@ public class Violation {
     /**
      * Название поля.
      */
+
     private final String fieldName;
     /**
      * Текст ошибки.
