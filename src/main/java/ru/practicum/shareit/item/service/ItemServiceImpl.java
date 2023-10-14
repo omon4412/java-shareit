@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.exception.BookingBadRequestException;
@@ -17,15 +18,15 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.ItemRequestRepository;
+import ru.practicum.shareit.request.RequestNotFoundException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,17 +38,23 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userStorage;
     private final CommentRepository commentRepository;
     private final BookingRepository bookingRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Transactional
     @Override
-    public Item addItem(Item item, int ownerID) {
+    public ItemDto addItem(ItemDto itemDto, int ownerID) {
         User owner = userStorage.findById(ownerID)
                 .orElseThrow(() -> {
                     log.error("Пользователь с id=" + ownerID + " не найден");
                     return new UserNotFoundException("Пользователь с id=" + ownerID + " не найден");
                 });
+        ItemRequest itemRequest = itemDto.getRequestId() == null ? null : itemRequestRepository
+                .findById(itemDto.getRequestId())
+                .orElseThrow(() -> new RequestNotFoundException("ItemRequest not found."));
+        Item item = ItemMapper.toItem(itemDto);
         item.setOwner(owner);
-        return itemStorage.save(item);
+        item.setRequest(itemRequest);
+        return ItemMapper.toItemDto(itemStorage.save(item));
     }
 
     @Transactional(readOnly = true)
@@ -126,17 +133,20 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public Collection<ItemDto> getAll(int userId) {
+    public Collection<ItemDto> getAll(int userId, Integer from, Integer size) {
         userStorage.findById(userId)
                 .orElseThrow(() -> {
                     log.error("Пользователь с id=" + userId + " не найден");
                     return new UserNotFoundException("Пользователь с id=" + userId + " не найден");
                 });
 
-        List<Item> items = itemStorage.getAllByOwnerIdOrderByOwnerId(userId);
-        items.sort(Comparator.comparing(Item::getId));
+        PageRequest pageRequest = PageRequest.of(from / size, size);
 
-        return items.stream()
+        List<Item> items = itemStorage.getAllByOwnerIdOrderByOwnerId(userId, pageRequest).getContent();
+        List<Item> sortedItems = new ArrayList<>(items);
+        sortedItems.sort(Comparator.comparing(Item::getId));
+
+        return sortedItems.stream()
                 .map(item -> {
                     ItemDto itemDto = ItemMapper.toItemDto(item);
                     itemDto.setComments(commentRepository.findAllByItemIdOrderByIdDesc(itemDto.getId())
@@ -164,12 +174,13 @@ public class ItemServiceImpl implements ItemService {
 
     @Transactional(readOnly = true)
     @Override
-    public Collection<Item> searchItems(String text) {
+    public Collection<Item> searchItems(String text, Integer from, Integer size) {
         if (text.isBlank()) {
             log.debug("Пустой запрос");
             return Collections.emptyList();
         }
-        return itemStorage.search(text);
+        PageRequest pageRequest = PageRequest.of(from / size, size);
+        return itemStorage.search(text, pageRequest).getContent();
     }
 
     @Transactional

@@ -16,7 +16,7 @@ public interface ItemService {
      * @param item Объект предмета для добавления
      * @return Добавленный объект предмета
      */
-    Item addItem(Item item, int ownerId);
+    ItemDto addItem(ItemDto item, int ownerId);
 
     /**
      * Получает предмет по его идентификатору.
@@ -47,17 +47,21 @@ public interface ItemService {
      * Получает список всех предметов.
      *
      * @param userId Идентификатор пользователя
+     * @param from
+     * @param size
      * @return Список предметов
      */
-    Collection<ItemDto> getAll(int userId);
+    Collection<ItemDto> getAll(int userId, Integer from, Integer size);
 
     /**
      * Поиск предмета по названию или описанию.
      *
      * @param text текст поиска
+     * @param from
+     * @param size
      * @return список предметов
      */
-    Collection<Item> searchItems(String text);
+    Collection<Item> searchItems(String text, Integer from, Integer size);
 
     /**
      * Добавить комментарий к предмету.

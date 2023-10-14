@@ -54,6 +54,8 @@ public class ItemDto {
      */
     protected Collection<CommentDto> comments;
 
+    private Integer requestId;
+
     /**
      * Информация об одной брони
      */
