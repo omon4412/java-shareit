@@ -42,8 +42,8 @@ public interface BookingService {
      *
      * @param userId идентификатор пользователя, чьи бронирования необходимо получить
      * @param state  статус бронирования
-     * @param from
-     * @param size
+     * @param from   индекс первого элемента, начиная с 0
+     * @param size   количество элементов для отображения
      * @return коллекция бронирований пользователя с указанным статусом
      */
     Collection<Booking> getAll(Integer userId, BookingStatus state, Integer from, Integer size);
@@ -53,8 +53,8 @@ public interface BookingService {
      *
      * @param ownerId       идентификатор владельца объектов
      * @param bookingStatus статус бронирования
-     * @param from
-     * @param size
+     * @param from          индекс первого элемента, начиная с 0
+     * @param size          количество элементов для отображения
      * @return коллекция бронирований объектов владельца с указанным статусом
      */
     Collection<Booking> getAllByOwner(Integer ownerId, BookingStatus bookingStatus, Integer from, Integer size);

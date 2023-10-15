@@ -22,8 +22,8 @@ public interface ItemService {
      * Получает предмет по его идентификатору.
      *
      * @param itemId Идентификатор предмета
-     * @param userId
-     * @return Объект предмет
+     * @param userId Идентификатор пользователя, для которого находят предмет
+     * @return Объект предмета
      */
     ItemDto getItemById(int itemId, Integer userId);
 
@@ -47,8 +47,8 @@ public interface ItemService {
      * Получает список всех предметов.
      *
      * @param userId Идентификатор пользователя
-     * @param from
-     * @param size
+     * @param from   индекс первого элемента, начиная с 0
+     * @param size   количество элементов для отображения
      * @return Список предметов
      */
     Collection<ItemDto> getAll(int userId, Integer from, Integer size);
@@ -57,8 +57,8 @@ public interface ItemService {
      * Поиск предмета по названию или описанию.
      *
      * @param text текст поиска
-     * @param from
-     * @param size
+     * @param from индекс первого элемента, начиная с 0
+     * @param size количество элементов для отображения
      * @return список предметов
      */
     Collection<Item> searchItems(String text, Integer from, Integer size);
