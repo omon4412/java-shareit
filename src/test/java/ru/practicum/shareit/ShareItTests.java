@@ -10,4 +10,9 @@ class ShareItTests {
     void contextLoads() {
     }
 
+    @Test
+    public void runApplication() {
+        ShareItApp.main(new String[]{});
+    }
+
 }

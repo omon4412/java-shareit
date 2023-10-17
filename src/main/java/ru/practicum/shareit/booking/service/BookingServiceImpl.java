@@ -80,8 +80,9 @@ public class BookingServiceImpl implements BookingService {
                 });
 
         if (booking.getItem().getOwner().getId() != userId) {
-            log.error("Пользователя с id=" + userId + "не может подтвердить бронь у не своего предмета");
-            throw new BookingNotFoundException("Нельзя забронировать предмет у самого себя");
+            log.error("Пользователь с id=" + userId + "не может подтвердить бронь у не своего предмета");
+            throw new BookingNotFoundException("Пользователь с id=" + userId
+                    + " не может подтвердить бронь у не своего предмета");
         }
         if (!booking.getStatus().equals(BookingStatus.WAITING)) {
             throw new BookingBadRequestException("Бронь уже подтверждена или отклонена");

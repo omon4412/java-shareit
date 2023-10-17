@@ -50,7 +50,7 @@ public class ItemServiceImpl implements ItemService {
                 });
         ItemRequest itemRequest = itemDto.getRequestId() == null ? null : itemRequestRepository
                 .findById(itemDto.getRequestId())
-                .orElseThrow(() -> new RequestNotFoundException("ItemRequest not found."));
+                .orElseThrow(() -> new RequestNotFoundException("Запрос не найден"));
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(owner);
         item.setRequest(itemRequest);

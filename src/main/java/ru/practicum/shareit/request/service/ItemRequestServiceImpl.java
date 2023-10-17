@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
+import ru.practicum.shareit.request.exception.RequestNotFoundException;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
@@ -75,7 +76,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         ItemRequest request = itemRequestRepository.findById(requestId)
                 .orElseThrow(() -> {
                     log.error("Запрос с id=" + requestId + " не найден");
-                    return new UserNotFoundException("Запрос с id=" + requestId + " не найден");
+                    return new RequestNotFoundException("Запрос с id=" + requestId + " не найден");
                 });
 
         ItemRequestDto itemRequestDto = ItemRequestMapper.toItemRequestDto(request);
