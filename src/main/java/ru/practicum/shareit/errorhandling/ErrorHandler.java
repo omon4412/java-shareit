@@ -13,6 +13,7 @@ import ru.practicum.shareit.booking.exception.BookingNotFoundException;
 import ru.practicum.shareit.item.exception.ItemNotAvailableException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
 import ru.practicum.shareit.item.exception.WrongOwnerException;
+import ru.practicum.shareit.request.exception.RequestNotFoundException;
 import ru.practicum.shareit.user.exception.UserAlreadyExistsException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 
@@ -89,6 +90,19 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleItemNotAvailableException(final ItemNotAvailableException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    /**
+     * Обработчик исключения {@link RequestNotFoundException}.
+     * Возникает когда искомый запрос не найден
+     *
+     * @param e Исключение {@link RequestNotFoundException}
+     * @return Объект {@link ErrorResponse} с информацией об ошибке
+     */
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleRequestNotFoundException(final RequestNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 

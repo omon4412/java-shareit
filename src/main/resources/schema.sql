@@ -1,13 +1,26 @@
+--select * from public.items;
 drop table if exists public.users CASCADE;
 drop table if exists public.items CASCADE;
 drop table if exists public.bookings CASCADE;
 drop table if exists public.comments CASCADE;
+drop table if exists public.requests CASCADE;
 
 CREATE TABLE IF NOT EXISTS public.users
 (
     user_id serial PRIMARY KEY,
     email   varchar(100) NOT NULL UNIQUE,
     name    varchar(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS public.requests
+(
+    request_id   serial
+        primary key,
+    requestor_id integer       not null
+        constraint requests_users_user_id_fk
+            references public.users,
+    description  varchar(1000) not null,
+    created      timestamp     not null
 );
 
 CREATE TABLE IF NOT EXISTS public.items
@@ -19,7 +32,10 @@ CREATE TABLE IF NOT EXISTS public.items
     available   boolean default true,
     owner_id    integer      not null
         constraint items_users_user_id_fk
-            references public.users
+            references public.users,
+    request_id  integer
+        constraint items_requests_request_id_fk
+            references public.requests
 );
 
 CREATE TABLE IF NOT EXISTS public.bookings

@@ -15,6 +15,7 @@ import ru.practicum.shareit.validation.Create;
 import ru.practicum.shareit.validation.Update;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -39,8 +40,8 @@ public class ItemController {
     public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") Integer userId,
                            @Validated(Create.class) @RequestBody ItemDto itemDto) {
         log.debug("Начато добавление предмета - " + itemDto);
-        Item item = ItemMapper.toItem(itemDto);
-        return ItemMapper.toItemDto(itemService.addItem(item, userId));
+        //Item item = ItemMapper.toItem(itemDto);
+        return itemService.addItem(itemDto, userId);
     }
 
     /**
@@ -91,8 +92,10 @@ public class ItemController {
      * @return Список предметов
      */
     @GetMapping
-    public Collection<ItemDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") Integer userId) {
-        Collection<ItemDto> items = itemService.getAll(userId);
+    public Collection<ItemDto> getAll(@RequestHeader(value = "X-Sharer-User-Id") Integer userId,
+                                      @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                      @RequestParam(defaultValue = "5") @Positive Integer size) {
+        Collection<ItemDto> items = itemService.getAll(userId, from, size);
         log.debug("Количество предметов пользователя - " + userId + " - " + items.size());
         return items;
     }
@@ -104,8 +107,10 @@ public class ItemController {
      * @return список предметов
      */
     @GetMapping("/search")
-    public Collection<ItemDto> searchItems(@RequestParam @NotNull String text) {
-        return itemService.searchItems(text.toLowerCase()).stream()
+    public Collection<ItemDto> searchItems(@RequestParam @NotNull String text,
+                                           @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+                                           @RequestParam(defaultValue = "5") @Positive Integer size) {
+        return itemService.searchItems(text.toLowerCase(), from, size).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
     }

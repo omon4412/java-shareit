@@ -11,6 +11,8 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.validation.Create;
 
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
+@Validated
 public class BookingController {
     /**
      * Сервис управления бронированием.
@@ -83,7 +86,9 @@ public class BookingController {
     @GetMapping
     public Collection<BookingResponseDto> getAll(
             @RequestHeader("X-Sharer-User-Id") Integer userId,
-            @RequestParam(defaultValue = "ALL") String state) {
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+            @RequestParam(defaultValue = "5") @Positive Integer size) {
 
         BookingStatus bookingStatus;
         if (BookingStatus.contains(state)) {
@@ -91,7 +96,7 @@ public class BookingController {
         } else {
             bookingStatus = BookingStatus.UNKNOWN;
         }
-        Collection<Booking> bookings = bookingService.getAll(userId, bookingStatus);
+        Collection<Booking> bookings = bookingService.getAll(userId, bookingStatus, from, size);
         return bookings.stream()
                 .map(BookingMapper::toBookingResponseDto)
                 .collect(Collectors.toList());
@@ -107,7 +112,9 @@ public class BookingController {
     @GetMapping("/owner")
     public Collection<BookingResponseDto> getAllByOwner(
             @RequestHeader("X-Sharer-User-Id") Integer ownerId,
-            @RequestParam(defaultValue = "ALL") String state) {
+            @RequestParam(defaultValue = "ALL") String state,
+            @RequestParam(defaultValue = "0") @PositiveOrZero Integer from,
+            @RequestParam(defaultValue = "5") @Positive Integer size) {
 
         BookingStatus bookingStatus;
         if (BookingStatus.contains(state)) {
@@ -115,7 +122,7 @@ public class BookingController {
         } else {
             bookingStatus = BookingStatus.UNKNOWN;
         }
-        Collection<Booking> bookings = bookingService.getAllByOwner(ownerId, bookingStatus);
+        Collection<Booking> bookings = bookingService.getAllByOwner(ownerId, bookingStatus, from, size);
         return bookings.stream()
                 .map(BookingMapper::toBookingResponseDto)
                 .collect(Collectors.toList());
