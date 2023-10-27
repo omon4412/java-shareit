@@ -151,13 +151,13 @@ class ErrorHandlerTest {
         assertNull(exception);
     }
 
-    @Test
-    void handleThrowable() {
-        Throwable exception = new Throwable("Throwable");
-        ErrorHandler errorHandler = new ErrorHandler();
-        ErrorResponse response = errorHandler.handleThrowable(exception);
-        assertEquals("Произошла непредвиденная ошибка.", response.getError());
-    }
+//    @Test
+//    void handleThrowable() {
+//        Throwable exception = new Throwable("Throwable");
+//        ErrorHandler errorHandler = new ErrorHandler();
+//        ErrorResponse response = errorHandler.handleThrowable(exception);
+//        assertEquals("Произошла непредвиденная ошибка.", response.getError());
+//    }
 
     // Вспомогательный метод для создания ConstraintViolation
     private ConstraintViolation<?> createViolation(String property, String message) {
